@@ -246,7 +246,11 @@ class UniversalClassLoader
     public function loadClass($class)
     {
         if ($file = $this->findFile($class)) {
-            require $file;
+            call_user_func(function () use ($file) {
+                ob_start();
+                require $file;
+                ob_end_clean();
+            });
         }
     }
 
