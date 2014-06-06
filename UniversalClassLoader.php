@@ -275,7 +275,7 @@ class UniversalClassLoader
 
                 foreach ($dirs as $dir) {
                     $file = $dir.DIRECTORY_SEPARATOR.$normalizedClass;
-                    if (is_file($file)) {
+                    if (is_file($file) && is_readable($file)) {
                         return $file;
                     }
                 }
@@ -283,7 +283,7 @@ class UniversalClassLoader
 
             foreach ($this->namespaceFallbacks as $dir) {
                 $file = $dir.DIRECTORY_SEPARATOR.$normalizedClass;
-                if (is_file($file)) {
+                if (is_file($file) && is_readable($file)) {
                     return $file;
                 }
             }
@@ -298,7 +298,7 @@ class UniversalClassLoader
 
                 foreach ($dirs as $dir) {
                     $file = $dir.DIRECTORY_SEPARATOR.$normalizedClass;
-                    if (is_file($file)) {
+                    if (is_file($file) && is_readable($file)) {
                         return $file;
                     }
                 }
@@ -306,7 +306,7 @@ class UniversalClassLoader
 
             foreach ($this->prefixFallbacks as $dir) {
                 $file = $dir.DIRECTORY_SEPARATOR.$normalizedClass;
-                if (is_file($file)) {
+                if (is_file($file) && is_readable($file)) {
                     return $file;
                 }
             }
