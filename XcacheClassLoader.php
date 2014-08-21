@@ -122,4 +122,13 @@ class XcacheClassLoader
 
         return $file;
     }
+    
+    /**
+     * Passes through all unknown calls onto the decorated object.
+     */
+    public function __call($method, $args)
+    {
+        return call_user_func_array(array($this->classFinder, $method), $args);
+    }
+
 }
