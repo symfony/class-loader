@@ -92,15 +92,15 @@ class ClassLoader
         }
         if (isset($this->prefixes[$prefix])) {
             if (is_array($paths)) {
-                $this->prefixes[$prefix] = array_merge(
+                $this->prefixes[$prefix] = array_unique(array_merge(
                     $this->prefixes[$prefix],
                     $paths
-                );
-            } if (!in_array($paths, $this->prefixes[$prefix])) {
+                ));
+            } else if (!in_array($paths, $this->prefixes[$prefix])) {
                  $this->prefixes[$prefix][] = $paths;
             }
         } else {
-            $this->prefixes[$prefix] = (array) $paths;
+            $this->prefixes[$prefix] = array_unique((array) $paths);
         }
     }
 

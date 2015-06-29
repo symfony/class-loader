@@ -86,6 +86,16 @@ class ClassLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(1, $prefixes['Foo']);
     }
 
+    public function testAddPrefixesSingle()
+    {
+        $loader = new ClassLoader();
+        $loader->addPrefixes(array('Foo' => array('foo', 'foo')));
+        $loader->addPrefixes(array('Foo' => array('foo')));
+        $prefixes = $loader->getPrefixes();
+        $this->assertArrayHasKey('Foo', $prefixes);
+        $this->assertCount(1, $prefixes['Foo'], print_r($prefixes, true));
+    }
+
     public function testAddPrefixMulti()
     {
         $loader = new ClassLoader();
