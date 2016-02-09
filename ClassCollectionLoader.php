@@ -62,6 +62,7 @@ class ClassCollectionLoader
 
         // auto-reload
         $reload = false;
+        $metadata = null;
         if ($autoReload) {
             $metadata = $cache.'.meta';
             if (!is_file($metadata) || !is_file($cache)) {
@@ -110,6 +111,7 @@ class ClassCollectionLoader
             }
 
             $c = self::fixNamespaceDeclarations('<?php '.$c);
+            $c = self::fixMagicConstant($c, $class->getFileName());
             $c = preg_replace('/^\s*<\?php/', '', $c);
 
             $content .= $c;
@@ -121,7 +123,7 @@ class ClassCollectionLoader
         }
         self::writeCacheFile($cache, '<?php '.$content);
 
-        if ($autoReload) {
+        if ($autoReload && $metadata) {
             // save the resources
             self::writeCacheFile($metadata, serialize(array($files, $classes)));
         }
@@ -212,6 +214,19 @@ class ClassCollectionLoader
         self::$useTokenizer = (bool) $bool;
     }
 
+    /**
+     * Overwrite magic constants __DIR__ and __FILE__ with their value
+     *
+     * @param  string $source
+     * @param  string $fileName
+     * @return string
+     */
+    public static function fixMagicConstant($source, $fileName) {
+        return str_replace(
+            array( '__DIR__'                 ,  '__FILE__'      , ),
+            array("'".dirname($fileName)."'" , "'".$fileName."'", ),
+            $source);
+    }
     /**
      * Strips leading & trailing ws, multiple EOL, multiple ws.
      *
