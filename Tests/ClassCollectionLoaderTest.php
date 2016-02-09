@@ -278,4 +278,39 @@ EOF
 
         unlink($file);
     }
+
+    public function testMagicConstant() {
+        if (is_file($file = sys_get_temp_dir().DIRECTORY_SEPARATOR.'baz.php')) {
+            unlink($file);
+        }
+        spl_autoload_register($r = function ($class) {
+            if (0 === strpos($class, 'ClassesWithParents')) {
+                require_once __DIR__.'/Fixtures/'.$class.'.php';
+            }
+        });
+
+        ClassCollectionLoader::load(
+            array('ClassesWithParents\\H'),
+            sys_get_temp_dir(),
+            'baz',
+            false
+        );
+
+        spl_autoload_unregister($r);
+
+        $dir = __DIR__ . DIRECTORY_SEPARATOR . 'Fixtures' . DIRECTORY_SEPARATOR . 'ClassesWithParents';
+
+        $expectedRawString =
+"namespace ClassesWithParents\n".
+"{\n".
+"class H extends G{\n".
+"public function run() {\n".
+"return array('file'=> '".$dir.DIRECTORY_SEPARATOR."H.php','dir'=> '".$dir."','parentDir'=> dirname('".$dir."'),\n".
+");\n".
+"}\n".
+"}}";
+
+        $this->assertEquals($expectedRawString , str_replace("<?php \n", '', file_get_contents($file)));
+        unlink($file);
+    }
 }
